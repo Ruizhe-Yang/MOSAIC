@@ -11,6 +11,8 @@
   <a href="./MOSAIC_v0.8_Modelica_Modeling_Standard.html">📘 中文完整规范 · v0.8</a>
   &nbsp;·&nbsp;
   <a href="https://github.com/Ruizhe-Yang/modelica-system-level-simulation-skill">🛠️ MOSAIC-skill · AI 辅助实施</a>
+  &nbsp;·&nbsp;
+  <a href="#english-documentation">English Introduction</a>
 </p>
 
 **MOSAIC** 面向复杂系统的 Modelica 总体级建模与多物理场仿真，提供一套能够落实到具体模型、接口、参数、图形和验证工作的工程规范。它从真实系统的组成和工作关系出发，统一约定**模型角色、结构与行为分工、接口契约、配置来源、模型可视化以及仿真证据**，帮助工程师建立可理解、可配置、可扩展、可维护的系统模型。
@@ -115,3 +117,106 @@ MOSAIC/
 ---
 
 <p align="center"><strong>Model the Whole as MOSAIC.</strong><br><sub>Architecture · Interfaces · Contracts · Executable Modelica Systems</sub></p>
+
+
+---
+
+<a id="english-documentation"></a>
+
+# MOSAIC — English Introduction
+
+**Modelica-Oriented System Architecture, Interfaces and Contracts**  
+*Model the Whole as MOSAIC.*
+
+MOSAIC is an **engineering modeling methodology and practical specification for system-level, multi-physics simulation with Modelica**. It helps modelers represent a complex engineered system through a coherent set of system boundaries, reusable components, explicit interfaces, configuration records, and executable behaviors. Its purpose is to make system models easier to **understand, assemble, configure, inspect, evolve, and verify** as the engineering project grows.
+
+Rather than introducing a new solver or requiring an additional Modelica component library, MOSAIC defines **how to organize and maintain an existing Modelica engineering project**. The current specification is **MOSAIC v0.8**.
+
+**Useful links:** [Full MOSAIC v0.8 modeling specification (Chinese HTML)](./MOSAIC_v0.8_Modelica_Modeling_Standard.html) · [MOSAIC-skill — AI-assisted implementation](https://github.com/Ruizhe-Yang/modelica-system-level-simulation-skill) · [OneSatSim — MOSAIC-based spacecraft example](https://github.com/Ruizhe-Yang/OneSatSim)
+
+## Why MOSAIC?
+
+Building a large Modelica model involves more than writing physical equations. System engineers must also decide where the system boundaries lie, which components own dynamic states, how interfaces carry physical or information signals, how design parameters reach the running model, and how a change can be verified without unintentionally altering established behavior.
+
+MOSAIC addresses these recurring engineering concerns:
+
+- **Architecture that reflects the system:** organize real systems, subsystems, assemblies, and behavioral units into a navigable model hierarchy.
+- **Clear division of responsibilities:** distinguish white-box composition from physical, control, or algorithmic behavior.
+- **Explicit interfaces and contracts:** preserve connector semantics, units, signal identities, and state ownership across model boundaries.
+- **Single-source configuration:** manage design parameters, curves, initial conditions, and generated Modelica records without competing defaults.
+- **Useful native diagrams:** make Modelica `Icon`, `Diagram`, `Placement`, and actual `connect` statements mutually consistent.
+- **Traceable verification:** distinguish source-level checks from compilation, initialization, mission simulation, result validation, and fidelity assessment.
+
+These practices are intended for multi-domain systems such as spacecraft, aircraft, gas turbines, and other complex engineering applications. They do not impose one universal physical architecture or a fixed level of model fidelity.
+
+## Five model roles
+
+MOSAIC defines five conceptual **model roles**. They describe responsibilities, not mandatory naming prefixes.
+
+| Role | Meaning | Main responsibility |
+|---|---|---|
+| **TB — Top-level Box** | Top-level white box | Defines the simulation entry, selected configuration, environment/system instances, and their connections. |
+| **SB — System Box** | System/subsystem white box | Defines an integration boundary, public interfaces, internal composition, and static connections. |
+| **AB — Assembly Box** | Assembly white box | Combines lower-level behavior/library units through a meaningful assembly boundary. |
+| **BU — Behavior Unit** | Behavioral black box | Implements coherent physical equations, control logic, algorithms, state variables, and initialization. |
+| **LU — Library Unit** | Library reuse black box | Reuses native Modelica Standard Library components or static/display-only aliases without adding new behavior. |
+
+**Core rule:** TB, SB, and AB have *composition-only responsibilities at their own level*: declarations, static configuration, and connections. Physical constitutive equations, control logic, and state evolution belong to explicitly responsible BU/LU components. Detailed cases involving inheritance, modifiers, and statically expandable connection templates are covered by the complete specification.
+
+Natural class names such as `CompleteMission` or `SpacecraftSystem` are preferred; `TB_`, `SB_`, `AB_`, `BU_`, and `LU_` prefixes are **not required**.
+
+## What is included in v0.8?
+
+The current specification contains **36 primary rules, M01–M36**: **26 required (R), 9 recommended (S), and 1 reference (F)**. Additional appendices provide implementation guidance for model roles, interfaces, Modelica visualization, documentation, and engineering workflows.
+
+| Area | Covered engineering practices |
+|---|---|
+| Architecture and roles | Real component hierarchy, single executable network, model classification, and white-box/behavior boundaries |
+| Interfaces and states | Standard-library connector semantics, custom interfaces, units, commands versus measurements, and state ownership |
+| Configuration | Design parameters, physical properties, curves, offline generation, effective snapshots, and dependency tracking |
+| Diagrams and documentation | Consistent `Icon`/`Diagram` representations, connection colors, class descriptions, and model navigation |
+| Validation and maintenance | Scope-controlled changes, actual solver evidence, results interpretation, model evolution, and delivery checks |
+
+The standard engineering baseline uses **project-owned Modelica source code and Modelica Standard Library (MSL) 4.0.0**. Existing projects with a validated, frozen dependency version should not be upgraded merely because they adopt a newer document.
+
+## Recommended modeling workflow
+
+1. **Define the engineering problem:** intended use, system boundaries, mission or operating scenarios, important outputs, and acceptance criteria.
+2. **Establish the architecture:** identify actual systems and components, and assign appropriate TB/SB/AB/BU/LU responsibilities.
+3. **Design interfaces:** choose suitable MSL connectors wherever possible, and specify custom interfaces and signal meanings explicitly.
+4. **Establish one configuration source:** track parameter and curve provenance and generate self-contained Modelica configuration data when needed.
+5. **Build and verify the executable system:** check the model, compile, initialize, simulate, and examine both raw results and independent engineering checks.
+6. **Evolve the model deliberately:** separate behavior-changing work from documentation-only and visual-only changes, and preserve accepted baselines.
+
+For example, an Excel workbook may be used **offline** to prepare configuration records. The resulting Modelica project can then run without reading that workbook during numerical integration.
+
+## Specification, skill, and example project
+
+The MOSAIC ecosystem separates the **engineering rules**, an **optional AI implementation aid**, and **real applications**:
+
+| Project | Purpose | Entry point |
+|---|---|---|
+| **[MOSAIC](https://github.com/Ruizhe-Yang/MOSAIC)** (this repository) | Source of the engineering methodology and the full Chinese modeling standard | [MOSAIC v0.8 HTML](./MOSAIC_v0.8_Modelica_Modeling_Standard.html) |
+| **[MOSAIC-skill](https://github.com/Ruizhe-Yang/modelica-system-level-simulation-skill)** | Agent Skill that helps AI coding assistants apply MOSAIC rules, audit projects, and protect task-specific change boundaries | [SKILL.md](https://github.com/Ruizhe-Yang/modelica-system-level-simulation-skill/blob/main/SKILL.md) |
+| **[OneSatSim](https://github.com/Ruizhe-Yang/OneSatSim)** | A system-level, multi-physics **12U CubeSat** modeling and mission-simulation project implemented following MOSAIC conventions | [CompleteMission](https://github.com/Ruizhe-Yang/OneSatSim/blob/main/Simulation/CompleteMission.mo) |
+
+MOSAIC can be adopted **manually**, without the skill. MOSAIC-skill helps execute and review modeling tasks but does **not** replace an actual Modelica compiler, simulation engine, or engineering validation.
+
+## Repository contents and scope
+
+```text
+MOSAIC/
+├── README.md
+├── MOSAIC_v0.8_Modelica_Modeling_Standard.html  # Full Chinese standard
+└── assets/brand/
+    ├── MOSAIC_logo.svg                         # MOSAIC brand logo
+    └── MOSAIC_symbol.svg                       # Brand symbol
+```
+
+The main deliverable in this repository is the **Chinese HTML specification**; download or open the HTML in a local browser for the full document. This repository does **not** distribute a separate Modelica solver, mandatory runtime library, or complete simulation case model.
+
+MOSAIC is a modeling and engineering specification. Conformance to its structure alone does not establish numerical accuracy, safety certification, or fitness for a particular physical application. Model fidelity and validation results must be established for each engineering use case.
+
+Issues and contributions discussing rules, system architectures, reusable interface practices, and real-world modeling experience are welcome.
+
+<p align="center"><strong>Model the Whole as MOSAIC.</strong><br><sub>Open architecture · Explicit interfaces · Executable system models</sub></p>
